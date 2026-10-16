@@ -1,21 +1,22 @@
-# INTRODUCTIO
+# AssetIQ AI
 
-## Project name: 
--AssetIQ AI - Predict failures. Optimize maintenance. Protect operations.
+**Predict failures. Optimize maintenance. Protect operations.**
 
 AssetIQ AI is an end-to-end AI prototype for predictive maintenance and asset intelligence. It helps maintenance teams in mining, energy, transport, telecoms, water and other asset-heavy industries decide which equipment needs attention first.
 
 Built by Elzel de Beer as the End-to-End AI Solution project.
 
-## ACCESS THE APP: 
------
+> **Live demo:** _add your Streamlit Cloud link here_  
+> **Landing page:** _add your portfolio link here_
 
-## THE PROBLEM:
+---
+
+## The problem
 
 Unplanned equipment failure causes downtime, expensive repairs, disrupted services and safety risks. Many organisations either follow a fixed maintenance schedule or react after something breaks. AssetIQ AI uses sensor and maintenance data to answer five questions:
 
 | Question | What AssetIQ does |
-
+|---|---|
 | What might fail? | Scores each asset's probability of failing |
 | When might maintenance be needed? | Estimates days left on the simulated fleet (not possible on AI4I, which has no time-to-failure) |
 | What's unusual? | Flags readings that drift from normal operation |
@@ -24,7 +25,7 @@ Unplanned equipment failure causes downtime, expensive repairs, disrupted servic
 
 ## How it works
 
-mermaid
+```mermaid
 flowchart LR
     A[Sensor and maintenance data] --> B[Feature engineering]
     B --> C[Failure risk model]
@@ -77,35 +78,33 @@ pip install -r requirements.txt
 ```
 
 1. Download `ai4i2020.csv` from the UCI link above and save it as `data/ai4i2020.csv`.
-2. Start the app: `python -m streamlit run app.py`. The first time you open the **Real Data AI4I** page, the models train automatically (about a minute) and are saved in `models/`. You can also train manually with `python train_ai4i.py`.
+2. Train the models: `python train_ai4i.py`
+3. Start the app: `python -m streamlit run app.py`
 
-On Windows you can double-click `START_HERE.bat` to set everything up and start the app in one go.
+The demo fleet works without step 1 and 2. The **Real Data AI4I** page in the sidebar needs them.
 
-The demo fleet works without the dataset. The **Real Data AI4I** page needs it. To deploy on Streamlit Cloud, commit `data/ai4i2020.csv` (CC BY 4.0) so the page can train on first load.
+**Web dashboard:** training also writes `models/web_export.json`. Open the web version of the dashboard, go to the *Real data* section and choose that file. The same model then ranks and scores machines in your browser, and nothing is uploaded anywhere. The browser scores match the Python model to within about one percentage point.
 
-**Web dashboard (no Python needed):** open the web version of the dashboard, go to the *Real data* section, click *Train from ai4i2020.csv* and choose the dataset file. The model trains in your browser in a few seconds and nothing is uploaded. It uses the same approach as the Python version (a class-weighted Random Forest compared with a logistic baseline, a failure-cause model, and a threshold tuned without touching the test set). You can also load `models/web_export.json`, which `train_ai4i.py` writes, to show the Python model in the browser.
+## Project structure
 
-## PROJECT STRUCTURE 
+```
+app.py                      Dashboard on the simulated South African fleet
+pages/1_Real_Data_AI4I.py   Model evidence, ranking real machines, score-a-machine tool
+train_ai4i.py               Trains and evaluates the AI4I models
+ai4i_features.py            Feature engineering and scoring shared by training and the app
+theme.py                    Shared look and feel
+.streamlit/config.toml      Dark theme settings
+data/                       Put ai4i2020.csv here
+models/                     Created by training (model, metrics, held-out test set, web_export.json)
+```
 
-app.py         ->             Landing page (start here)
-pages/1_Dashboard.py ->       Dashboard on the simulated South African fleet
-pages/2_Real_Data_AI4I.py ->  Model evidence, ranking real machines, score-a-machine tool
-train_ai4i.py         ->      Trains and evaluates the AI4I models
-ai4i_features.py       ->     Feature engineering and scoring shared by training and the app
-theme.py, art.py         ->   Look and feel: stippled heat backgrounds, heat map graphic, chart panels
-assets/                  ->   Photos used on the landing page
-.streamlit/config.toml   ->   Dark theme settings
-data/                    ->   Put ai4i2020.csv here
-models/                  ->   Created by training (model, metrics, held-out test set, web_export.json)
+## Responsible AI
 
-
-## RESPONSIBLE AI 
-
-Human in the loop: The system only suggests actions. A qualified person approves every inspection or repair, and the dashboard asks for that confirmation.
-Honest about data: The benchmark and the demo fleet are both synthetic, and the app says so.
-Rare-event evaluation: Metrics were chosen for imbalanced failures, and the threshold was tuned without touching the test set.
-Explainable: Feature importance and a predicted failure mode accompany each score.
-Safety context: In regulated settings such as mining, the output supports and never replaces statutory safety inspections.
+- **Human in the loop.** The system only suggests actions. A qualified person approves every inspection or repair, and the dashboard asks for that confirmation.
+- **Honest about data.** The benchmark and the demo fleet are both synthetic, and the app says so.
+- **Rare-event evaluation.** Metrics were chosen for imbalanced failures, and the threshold was tuned without touching the test set.
+- **Explainable.** Feature importance and a predicted failure mode accompany each score.
+- **Safety context.** In regulated settings such as mining, the output supports and never replaces statutory safety inspections.
 
 ## Limitations
 
