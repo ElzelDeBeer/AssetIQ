@@ -1,4 +1,4 @@
-# INTRODUCTION 
+# INTRODUCTIO
 
 ## Project name: 
 -AssetIQ AI - Predict failures. Optimize maintenance. Protect operations.
@@ -10,7 +10,7 @@ Built by Elzel de Beer as the End-to-End AI Solution project.
 ## ACCESS THE APP: 
 -----
 
-## The problem
+## THE PROBLEM:
 
 Unplanned equipment failure causes downtime, expensive repairs, disrupted services and safety risks. Many organisations either follow a fixed maintenance schedule or react after something breaks. AssetIQ AI uses sensor and maintenance data to answer five questions:
 
