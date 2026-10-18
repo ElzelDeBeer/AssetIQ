@@ -78,25 +78,36 @@ pip install -r requirements.txt
 ```
 
 1. Download `ai4i2020.csv` from the UCI link above and save it as `data/ai4i2020.csv`.
-2. Train the models: `python train_ai4i.py`
-3. Start the app: `python -m streamlit run app.py`
+2. Start the app: `python -m streamlit run app.py`. The first time you open the **Real Data AI4I** page, the models train automatically (about a minute) and are saved in `models/`. You can also train manually with `python train_ai4i.py`.
 
-The demo fleet works without step 1 and 2. The **Real Data AI4I** page in the sidebar needs them.
+On Windows you can double-click `START_HERE.bat` to set everything up and start the app in one go.
 
-**Web dashboard:** training also writes `models/web_export.json`. Open the web version of the dashboard, go to the *Real data* section and choose that file. The same model then ranks and scores machines in your browser, and nothing is uploaded anywhere. The browser scores match the Python model to within about one percentage point.
+The demo fleet works without the dataset. The **Real Data AI4I** page needs it. To deploy on Streamlit Cloud, commit `data/ai4i2020.csv` (CC BY 4.0) so the page can train on first load.
+
+**Web dashboard (no Python needed):** open the web version of the dashboard, go to the *Real data* section, click *Train from ai4i2020.csv* and choose the dataset file. The model trains in your browser in a few seconds and nothing is uploaded. It uses the same approach as the Python version (a class-weighted Random Forest compared with a logistic baseline, a failure-cause model, and a threshold tuned without touching the test set). You can also load `models/web_export.json`, which `train_ai4i.py` writes, to show the Python model in the browser.
 
 ## Project structure
 
 ```
-app.py                      Dashboard on the simulated South African fleet
-pages/1_Real_Data_AI4I.py   Model evidence, ranking real machines, score-a-machine tool
+app.py                      Entry point: sets up the pages and navigation
+views/home.py               Landing page
+views/dashboard.py          Dashboard on the simulated South African fleet
+views/evidence.py           Model evidence, ranking real machines, score-a-machine tool
 train_ai4i.py               Trains and evaluates the AI4I models
 ai4i_features.py            Feature engineering and scoring shared by training and the app
-theme.py                    Shared look and feel
+theme.py, art.py            Look and feel: stippled heat backgrounds, heat map graphic, chart panels
+assets/                     Photos used on the landing page
 .streamlit/config.toml      Dark theme settings
 data/                       Put ai4i2020.csv here
-models/                     Created by training (model, metrics, held-out test set, web_export.json)
+models/                     Created by training (not committed)
 ```
+
+## Deploy on Streamlit Community Cloud
+
+1. Put these in your GitHub repo: `app.py`, `theme.py`, `art.py`, `ai4i_features.py`, `train_ai4i.py`, `requirements.txt`, `README.md`, `.gitignore`, the `views`, `assets` and `.streamlit` folders, and (optional) `data/ai4i2020.csv`.
+2. Do **not** upload `venv`, `__pycache__` or `models`. They are large, are rebuilt automatically, and are the usual reason GitHub rejects an upload.
+3. In Streamlit Cloud, choose the repo, the `main` branch and `app.py` as the main file. If the build fails on a library, set the app's Python version to 3.12 in its settings.
+4. If `data/ai4i2020.csv` is not in the repo, open the model evidence page and upload the file there. The model trains automatically.
 
 ## Responsible AI
 
